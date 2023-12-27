@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>사용량 예측</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+     <style>
+       #loading {
+                display: none;
+                border: 5px solid #f3f3f3; /* Light grey background */
+                border-top: 5px solid #3498db; /* Blue color */
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 2s linear infinite;
+                position: fixed;
+                z-index: 100;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            @keyframes spin {
+                0% { transform: translate(-50%, -50%) rotate(0deg); }
+                100% { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+    </style>
+</head>
+<body>
+    <h1>사용량 예측 입력</h1>
+    <form  action="/predict" method="post"> <!-- 'action'에 서버의 URL을 입력합니다 -->
+        <label for="memId">memId</label>
+        <input type="text" id="memId" name="memId"><br><br>
+        <input type="button" id="submitForm" value="예측하기">
+    </form>
+    <div id="result"></div>
+    <div id="loading">
+        Loading...
+    </div>
+    <script>
+        $(document).ready(function(){
+            $("#submitForm").click(function(){
+                $('#loading').show();
+                var data = {
+                    memId: $("#memId").val()
+                };
+                $("#result").empty();
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/predict',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(response){
+
+                        $("#result").html('예측 결과: ' + response);
+                    },
+                    error: function(error){
+                        console.log(error);
+                    },
+                    complete: function() {
+                        $('#loading').hide(); // Hide the loading indicator regardless of success or error
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

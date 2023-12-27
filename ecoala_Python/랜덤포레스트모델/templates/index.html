@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Prediction</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Model Prediction</h1>
+
+    <label >MEM_NO :</label>
+    <input type="text" id="MEM_NO" name="MEM_NO" required>
+    <label >HOUSE_TYPE :</label>
+    <input type="text"  id="HOUSE_TYPE" name="HOUSE_TYPE" required>
+    <label >AVGTEM :</label>
+    <input type="text" id="AVGTEM" name="AVGTEM" required>
+    <label >AVGHUM :</label>
+    <input type="text" id="AVGHUM" name="AVGHUM" required>
+    <label >DT_MM :</label>
+    <input type="text" id="DT_MM" name="DT_MM" required>
+    <label >DAY_WEEK :</label>
+    <input type="text" id="DAY_WEEK" name="DAY_WEEK" required>
+    <button onclick="predict()">Predict</button>
+    <p id="result"></p>
+
+    <script>
+        function predict() {
+            // 사용자 입력 값 가져오기
+            var MEM_NO = $("#MEM_NO").val();
+            var HOUSE_TYPE = $("#HOUSE_TYPE").val();
+            var AVGTEM = $("#AVGTEM").val();
+            var AVGHUM = $("#AVGHUM").val();
+            var DT_MM = $("#DT_MM").val();
+            var DAY_WEEK = $("#DAY_WEEK").val();
+
+            // 서버로 데이터 전송
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                url: '/predict',
+                data: JSON.stringify({ 'MEM_NO': MEM_NO, 'HOUSE_TYPE': HOUSE_TYPE
+                                       , 'AVGTEM': AVGTEM
+                                       , 'AVGHUM': AVGHUM
+                                       , 'DT_MM': DT_MM
+                                       , 'DAY_WEEK': DAY_WEEK}),
+                success: function(response) {
+                    // 예측 결과 출력
+                    $("#result").text('Prediction result: ' + response.result);
+                },
+                error: function(error) {
+                    console.error('Error predicting:', error.responseJSON.error);
+                    $("#result").text('Error predicting. Please try again.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
